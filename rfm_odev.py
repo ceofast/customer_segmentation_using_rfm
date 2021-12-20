@@ -11,9 +11,9 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.max_rows', 20)
 pd.set_option('display.float_format', lambda x: '%.5f' % x)
 
-# Görev 1:
+# Task 1:
 
-# 1. Online Retail II excelindeki 2010-2011 verisini okuyunuz. Oluşturduğunuz dataframe’in kopyasını oluşturunuz.
+# 1. Read the 2010-2011 data in the Online Retail II excel. Make a copy of the dataframe you created.
 
 
 df = pd.read_excel(r"/Users/cenancanbikmaz/PycharmProjects/DSMLBC-7/HAFTA_3/online_retail_II.xlsx")
@@ -22,7 +22,7 @@ df_ = df.copy()
 
 df_.head()
 
-# # 2. Veri setinin betimsel istatistiklerini inceleyiniz.
+# # 2. Examine the descriptive statistics of the data set.
 
 def check_df(dataframe):
     print("################ Shape ####################")
@@ -40,7 +40,7 @@ def check_df(dataframe):
 
 check_df(df)
 
-# 3. Veri setinde eksik gözlem var mı? Varsa hangi değişkende kaç tane eksik gözlem vardır?
+# 3. Are there any missing observations in the dataset? If yes, how many missing observations in which variable?
 
 df.isnull().sum()
 
@@ -53,21 +53,21 @@ df.isnull().sum()
 # Customer ID    107927
 # Country             0
 
-# 4. Eksik gözlemleri veri setinden çıkartınız. Çıkarma işleminde ‘inplace=True’ parametresini kullanınız.
+# 4. Remove the missing observations from the data set. Use the 'inplace=True' parameter for subtraction.
 
 df.dropna(inplace=True)
 
-# 5. Eşsiz ürün sayısı kaçtır?
+# 5. How many unique items?
 
 df["Description"].nunique()
 
 # 4459
 
-# 6. Hangi üründen kaçar tane vardır?
+# 6. How many of each product are there?
 
 df["Description"].value_counts()
 
-# 7. En çok sipariş edilen 5 ürünü çoktan aza doğru sıralayınız.
+# 7. Rank the 5 most ordered products from most to least.
 
 df['Description'].value_counts().sort_values(ascending=False).head(5)
 
@@ -77,7 +77,7 @@ df['Description'].value_counts().sort_values(ascending=False).head(5)
 # ASSORTED COLOUR BIRD ORNAMENT         1376
 # HOME BUILDING BLOCK WORD              1229
 
-# 8. Faturalardaki‘C’iptal edilen işlemleri göstermektedir. İptal edilen işlemleri veri setinden çıkartınız.
+# 8. The 'C' in the invoices shows the canceled transactions. Remove the canceled transactions from the dataset.
 
 df = df[~df["Invoice"].str.contains("C", na=False)]
 
@@ -102,7 +102,7 @@ replace_with_thresholds(df, 'Quantity')
 
 replace_with_thresholds(df, 'Price')
 
-# 9. Fatura başına elde edilen toplam kazancı ifade eden ‘TotalPrice’ adında bir değişken oluşturunuz.
+# 9. Create a variable named 'Total Price' that represents the total earnings per invoice.
 
 df['TotalPrice'] = df['Quantity'] * df['Price']
 
@@ -118,15 +118,15 @@ df.describe().T
 # Customer ID 15321.00000 16812.00000 18287.00000
 # TotalPrice     11.90000    19.50000  3925.57500
 
-# Görev 2: RFM metriklerinin hesaplanması
+# Task 2: Calculating RFM metrics
 
-# Recency, Frequency ve Monetary tanımlarını yapınız.
+# Make the definitions of Recency, Frequency and Monetary.
 
-# Müşteri özelinde Recency, Frequency ve Monetary metriklerini groupby, agg ve lambda ile hesaplayınız.
+# Calculate customer specific Recency, Frequency and Monetary metrics with groupby, agg and lambda.
 
-# Hesapladığınız metrikleri rfm isimli bir değişkene atayınız.
+# Assign your calculated metrics to a variable named rfm.
 
-# Oluşturduğunuz metriklerin isimlerini recency, frequency ve monetary olarak değiştiriniz.
+# Change the names of the metrics you created to recency, frequency and monetary.
 
 df['InvoiceDate'].max()
 
@@ -138,13 +138,13 @@ rfm.head()
 
 rfm.columns = ['recency', 'frequency', 'monetary']
 
-# Görev 3: RFM skorlarının oluşturulması ve tek bir değişkene çevrilmesi
+# Task 3: Generating and converting RFM scores to a single variable
 
-# Recency, Frequency ve Monetary metriklerini qcut yardımı ile 1-5 arasında skorlara çeviriniz.
+# Convert Recency, Frequency and Monetary metrics to scores between 1-5 with the help of qcut
 
-# Bu skorları recency_score, frequency_score ve monetary_score olarak kaydediniz.
+# Record these scores as recency_score, frequency_score and monetary_score.
 
-# Oluşan 2 farklı değişkenin değerini tek bir değişken olarak ifade ediniz ve RFM_SCORE olarak kaydediniz.
+# Express the value of 2 different variables as a single variable and save it as RFM_SCORE
 
 rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=[5, 4, 3, 2, 1])
 
@@ -162,9 +162,9 @@ rfm[rfm['RFM_SCORE'] == '55'].head()
 
 rfm[rfm['RFM_SCORE'] == '11'].head()
 
-# Görev 4: RFM skorlarının segment olarak tanımlanması
+# Task 4: Defining RFM scores as segments
 
-# Oluşturulan RFM skorların daha açıklanabilir olması için segment tanımlamaları yapınız.
+# Make segment definitions so that the generated RFM scores can be explained more clearly
 
 seg_map = {r'[1-2][1-2]': 'hibernating',
            r'[1-2][3-4]': 'at_Risk',
@@ -181,11 +181,11 @@ rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
 
 rfm.head()
 
-# Görev 5: Önemli bulduğunuz 3 segmenti seçiniz. Bu üç segmenti;
+# Task 5: Select 3 segments that you find important. These three segments;
 
-# - Hem aksiyon kararları açısından,
+# - Both in terms of action decisions,
 
-# - Hem de segmentlerin yapısı açısından (ortalama RFM değerleri) yorumlayınız.
+# - Also interpret in terms of the structure of the segments (mean RFM values).
 
 rfm[["segment", "recency", "frequency", "monetary"]].groupby("segment").agg(["mean", "count"])
 
@@ -203,18 +203,17 @@ rfm[["segment", "recency", "frequency", "monetary"]].groupby("segment").agg(["me
 
 rfm[rfm["segment"] == "hibernating"].head()
 
-# Alışveriş yapma sıklığı uzun süren ve uykuda olan müşterilerdir. Bu müşterilerin dikkatini çekebilecek
-# pazarlama stratejileri geliştirilmelidir.
+# They are customers who take a long time to shop and are asleep. Marketing strategies that can attract the attention of these customers should be developed.
 
 rfm[rfm["segment"] == "loyal_customers"].head()
 
-# Bu müşteriler potansiyel sadık müşterilerdir. Bu sebeple bu müşterilere özel kampanyalar hazırlanmalı ve
-# haftalık veya günlük alışveriş fiyat bültenleri ve kampayalar ile ilgili bilgiler gönderilmelidir.
+# These customers are potential loyal customers. For this reason, special campaigns should be prepared for these customers and information about weekly 
+# or daily shopping price bulletins and campaigns should be sent.
 
 rfm[rfm["segment"] == "need_attention"].head()
 
-# Bu müşteriler dikkat edilmesi gereken potansiyel sadık müşteri olma yolunda ilerleyen müşterilerdir.
-# Bu müşterilere özel bazı kampanyalar, indirimler düzenlenmeli ve dikkatli çekilmelidir.
+# These customers are the customers who are on the way to become potential loyal customers.
+# Some special campaigns and discounts should be organized for these customers and should be taken carefully.
 
 new_df = pd.DataFrame()
 new_df["new_customer_id_v2"] = rfm[rfm["segment"] == "loyal_customers"].index
