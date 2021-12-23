@@ -45,14 +45,23 @@ Make segment definitions so that the generated RFM scores can be explained more 
 Convert the scores into segments with the help of the seg_map below. Clue:
 
 seg_map = {r'[1-2][1-2]': 'hibernating',
+
            r'[1-2][3-4]': 'at_Risk',
+           
            r'[1-2]5': 'cant_loose',
+           
            r'3[1-2]': 'about_to_sleep',
+           
            r'33': 'need_attention',
+           
            r'[3-4][4-5]': 'loyal_customers',
+           
            r'41': 'promising',
+           
            r'51': 'new_customers',
+           
            r'[4-5][2-3]': 'potential_loyalists',
+           
            r'5[4-5]': 'champions'}
            
 Task 5: It's action time!
